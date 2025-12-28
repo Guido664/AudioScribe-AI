@@ -11,7 +11,8 @@ export default defineConfig(({ mode }) => {
     define: {
       // This explicitly replaces process.env.API_KEY in the code with the actual string value
       // from the environment variables during the build process.
-      'process.env.API_KEY': JSON.stringify(env.API_KEY),
+      // We add || '' to ensure it doesn't become the token `undefined` which can be tricky in some contexts.
+      'process.env.API_KEY': JSON.stringify(env.API_KEY || ''),
     },
   };
 });
