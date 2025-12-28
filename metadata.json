@@ -1,0 +1,5 @@
+{
+  "name": "AudioScribe AI",
+  "description": "A powerful web application that allows users to upload audio files from their device and transcribe them using Google Gemini AI.",
+  "requestFramePermissions": []
+}
