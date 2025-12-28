@@ -1,17 +1,12 @@
 import { GoogleGenAI } from "@google/genai";
 import { fileToGenerativePart } from "./utils";
 
-// We remove the top-level initialization to prevent the app from crashing on load (Black Screen)
-// if the API key is missing or env vars are not loaded yet.
-// const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
 export const transcribeAudio = async (file: File): Promise<string> => {
   // Vite replaces process.env.API_KEY with the actual string during build.
-  // If it's missing on Vercel, this check prevents a crash and gives a helpful error.
   const apiKey = process.env.API_KEY;
 
-  if (!apiKey) {
-    throw new Error("API Key is missing. Please add API_KEY to your Vercel Environment Variables.");
+  if (!apiKey || apiKey === "") {
+    throw new Error("API Key is missing. If you just added it to Vercel, please go to Deployments -> Redeploy to apply the changes.");
   }
 
   try {
@@ -43,8 +38,8 @@ export const transcribeAudio = async (file: File): Promise<string> => {
     
     // Provide more specific error messages
     if (error instanceof Error) {
-        if (error.message.includes("API key")) {
-            throw new Error("Invalid API Key. Please check your Vercel settings.");
+        if (error.message.includes("API key") || error.message.includes("403")) {
+            throw new Error("Invalid API Key or Permissions. Check Vercel settings and ensure the key is valid.");
         }
         return `Error: ${error.message}`;
     }
