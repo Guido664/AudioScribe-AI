@@ -2,11 +2,12 @@ import { GoogleGenAI } from "@google/genai";
 import { fileToGenerativePart } from "./utils";
 
 export const transcribeAudio = async (file: File): Promise<string> => {
-  // Vite replaces process.env.API_KEY with the actual string during build.
-  const apiKey = process.env.API_KEY;
+  // In Vite, environment variables exposed to the client must start with VITE_
+  // and are accessed via import.meta.env
+  const apiKey = import.meta.env.VITE_API_KEY;
 
   if (!apiKey || apiKey === "") {
-    throw new Error("API Key is missing. If you just added it to Vercel, please go to Deployments -> Redeploy to apply the changes.");
+    throw new Error("API Key is missing. Please check your Vercel settings.\n1. Go to Settings -> Environment Variables\n2. Add a variable named 'VITE_API_KEY' with your Google AI Key.\n3. Redeploy the app.");
   }
 
   try {
@@ -39,7 +40,7 @@ export const transcribeAudio = async (file: File): Promise<string> => {
     // Provide more specific error messages
     if (error instanceof Error) {
         if (error.message.includes("API key") || error.message.includes("403")) {
-            throw new Error("Invalid API Key or Permissions. Check Vercel settings and ensure the key is valid.");
+            throw new Error("Invalid API Key or Permissions. Check Vercel settings and ensure VITE_API_KEY is valid.");
         }
         return `Error: ${error.message}`;
     }

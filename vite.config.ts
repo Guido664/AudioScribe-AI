@@ -1,18 +1,7 @@
-import { defineConfig, loadEnv } from 'vite';
+import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => {
-  // Load env file based on `mode` in the current working directory.
-  // Set the third parameter to '' to load all env regardless of the `VITE_` prefix.
-  const env = loadEnv(mode, process.cwd(), '');
-  return {
-    plugins: [react()],
-    define: {
-      // This explicitly replaces process.env.API_KEY in the code with the actual string value
-      // from the environment variables during the build process.
-      // We add || '' to ensure it doesn't become the token `undefined` which can be tricky in some contexts.
-      'process.env.API_KEY': JSON.stringify(env.API_KEY || ''),
-    },
-  };
+export default defineConfig({
+  plugins: [react()],
 });
