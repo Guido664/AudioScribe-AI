@@ -1,11 +1,17 @@
 import { GoogleGenAI } from "@google/genai";
 import { fileToGenerativePart } from "./utils";
 
-export const transcribeAudio = async (file: File): Promise<string> => {
-  // Fixed: Use process.env.API_KEY as per guidelines.
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+const getClient = () => {
+  const apiKey = process.env.API_KEY;
+  if (!apiKey) {
+    throw new Error("Chiave API non trovata. Assicurati di aver impostato la variabile d'ambiente API_KEY.");
+  }
+  return new GoogleGenAI({ apiKey });
+};
 
+export const transcribeAudio = async (file: File): Promise<string> => {
   try {
+    const ai = getClient();
     const base64Data = await fileToGenerativePart(file);
 
     const response = await ai.models.generateContent({
@@ -29,22 +35,26 @@ export const transcribeAudio = async (file: File): Promise<string> => {
   } catch (error) {
     console.error("Transcription error:", error);
     
-    // Provide more specific error messages
+    let errorMessage = "Impossibile trascrivere l'audio. Per favore riprova.";
+    
     if (error instanceof Error) {
-        if (error.message.includes("API key") || error.message.includes("403")) {
-            throw new Error("Chiave API non valida o permessi mancanti. Controlla la configurazione.");
+        // Case insensitive check for "api key" to catch SDK errors
+        if (/api key/i.test(error.message) || error.message.includes("403")) {
+            errorMessage = "Chiave API non valida o permessi mancanti. Controlla la configurazione.";
+        } else if (error.message.includes("Chiave API non trovata")) {
+            errorMessage = error.message;
+        } else {
+             errorMessage = `Errore: ${error.message}`;
         }
-        return `Errore: ${error.message}`;
     }
     
-    throw new Error("Impossibile trascrivere l'audio. Per favore riprova.");
+    throw new Error(errorMessage);
   }
 };
 
 export const translateText = async (text: string): Promise<string> => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
   try {
+    const ai = getClient();
     const response = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
       contents: `Translate the following text into accurate and natural sounding Italian. Keep the formatting (paragraphs, speaker labels) intact. \n\n${text}`,
@@ -53,6 +63,11 @@ export const translateText = async (text: string): Promise<string> => {
     return response.text || "Traduzione fallita.";
   } catch (error) {
     console.error("Translation error:", error);
+    if (error instanceof Error) {
+        if (/api key/i.test(error.message) || error.message.includes("Chiave API")) {
+            throw new Error("Chiave API mancante o non valida.");
+        }
+    }
     throw new Error("Impossibile tradurre il testo.");
   }
 };
