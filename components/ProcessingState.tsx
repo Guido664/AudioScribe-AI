@@ -12,9 +12,9 @@ export const ProcessingState: React.FC = () => {
       </div>
       
       <div>
-        <h3 className="text-xl font-semibold text-white">Transcribing Audio</h3>
+        <h3 className="text-xl font-semibold text-white">Trascrizione in corso</h3>
         <p className="text-gray-400 mt-2 text-sm max-w-xs mx-auto">
-          Gemini is listening to your audio file and converting it to text. This might take a moment depending on the file length.
+          Gemini sta ascoltando il tuo file audio e lo sta convertendo in testo. Potrebbe richiedere un attimo a seconda della lunghezza del file.
         </p>
       </div>
     </div>

@@ -2,18 +2,10 @@ import { GoogleGenAI } from "@google/genai";
 import { fileToGenerativePart } from "./utils";
 
 export const transcribeAudio = async (file: File): Promise<string> => {
-  // In Vite, environment variables exposed to the client must start with VITE_
-  // and are accessed via import.meta.env
-  const apiKey = import.meta.env.VITE_API_KEY;
-
-  if (!apiKey || apiKey === "") {
-    throw new Error("API Key is missing. Please check your Vercel settings.\n1. Go to Settings -> Environment Variables\n2. Add a variable named 'VITE_API_KEY' with your Google AI Key.\n3. Redeploy the app.");
-  }
+  // Fixed: Use process.env.API_KEY as per guidelines.
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
   try {
-    // Initialize the client only when needed
-    const ai = new GoogleGenAI({ apiKey });
-    
     const base64Data = await fileToGenerativePart(file);
 
     const response = await ai.models.generateContent({
@@ -33,18 +25,34 @@ export const transcribeAudio = async (file: File): Promise<string> => {
       },
     });
 
-    return response.text || "No transcription generated.";
+    return response.text || "Nessuna trascrizione generata.";
   } catch (error) {
     console.error("Transcription error:", error);
     
     // Provide more specific error messages
     if (error instanceof Error) {
         if (error.message.includes("API key") || error.message.includes("403")) {
-            throw new Error("Invalid API Key or Permissions. Check Vercel settings and ensure VITE_API_KEY is valid.");
+            throw new Error("Chiave API non valida o permessi mancanti. Controlla la configurazione.");
         }
-        return `Error: ${error.message}`;
+        return `Errore: ${error.message}`;
     }
     
-    throw new Error("Failed to transcribe audio. Please try again.");
+    throw new Error("Impossibile trascrivere l'audio. Per favore riprova.");
+  }
+};
+
+export const translateText = async (text: string): Promise<string> => {
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-3-flash-preview',
+      contents: `Translate the following text into accurate and natural sounding Italian. Keep the formatting (paragraphs, speaker labels) intact. \n\n${text}`,
+    });
+
+    return response.text || "Traduzione fallita.";
+  } catch (error) {
+    console.error("Translation error:", error);
+    throw new Error("Impossibile tradurre il testo.");
   }
 };

@@ -23,7 +23,7 @@ function App() {
   const processFile = async (file: File) => {
     const validation = validateAudioFile(file);
     if (!validation.valid) {
-      setErrorMsg(validation.message || 'Invalid file');
+      setErrorMsg(validation.message || 'File non valido');
       return;
     }
 
@@ -35,7 +35,7 @@ function App() {
       setTranscription(result);
       setAppState(AppState.SUCCESS);
     } catch (err) {
-      setErrorMsg(err instanceof Error ? err.message : 'An unknown error occurred');
+      setErrorMsg(err instanceof Error ? err.message : 'Si è verificato un errore sconosciuto');
       setAppState(AppState.ERROR);
     }
   };
@@ -54,21 +54,20 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[url('https://picsum.photos/1920/1080?blur=10')] bg-cover bg-center bg-fixed flex flex-col">
-      <div className="absolute inset-0 bg-gray-950/90 z-0"></div>
+    <div className="min-h-screen bg-gray-950 flex flex-col">
       
-      <main className="relative z-10 flex-grow flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8">
+      <main className="flex-grow flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8">
         
         {/* Header */}
         <div className="mb-12 text-center space-y-4 max-w-2xl">
-          <div className="inline-flex items-center justify-center p-3 bg-brand-500/10 rounded-2xl mb-2 backdrop-blur-sm border border-brand-500/20">
+          <div className="inline-flex items-center justify-center p-3 bg-brand-500/10 rounded-2xl mb-2 border border-brand-500/20">
             <AudioFileIcon className="w-8 h-8 text-brand-400" />
           </div>
           <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white via-brand-200 to-brand-400 tracking-tight">
             AudioScribe AI
           </h1>
           <p className="text-lg text-gray-400">
-            Instantly transcribe meetings, voice notes, and interviews directly from your device using Gemini.
+            Trascrivi istantaneamente riunioni, note vocali e interviste direttamente dal tuo dispositivo usando Gemini.
           </p>
         </div>
 
@@ -77,7 +76,7 @@ function App() {
           
           {appState === AppState.IDLE && (
             <div 
-              className="group relative border-2 border-dashed border-gray-700 hover:border-brand-500 hover:bg-gray-900/50 bg-gray-900/30 rounded-3xl p-12 text-center transition-all cursor-pointer backdrop-blur-sm"
+              className="group relative border-2 border-dashed border-gray-700 hover:border-brand-500 hover:bg-gray-900/50 bg-gray-900/30 rounded-3xl p-12 text-center transition-all cursor-pointer"
               onClick={triggerUpload}
             >
               <input 
@@ -94,19 +93,19 @@ function App() {
                 </div>
                 
                 <div className="space-y-2">
-                  <h3 className="text-xl font-semibold text-white">Tap to upload audio</h3>
+                  <h3 className="text-xl font-semibold text-white">Tocca per caricare l'audio</h3>
                   <p className="text-gray-400 text-sm">MP3, WAV, M4A (Max 20MB)</p>
                 </div>
 
                 <div className="bg-brand-600 text-white px-6 py-2 rounded-full font-medium text-sm shadow-lg shadow-brand-600/30 group-hover:bg-brand-500 transition-colors">
-                  Select File
+                  Seleziona File
                 </div>
               </div>
             </div>
           )}
 
           {appState === AppState.PROCESSING && (
-            <div className="bg-gray-900/50 border border-gray-800 rounded-3xl p-12 backdrop-blur-md shadow-2xl">
+            <div className="bg-gray-900/50 border border-gray-800 rounded-3xl p-12 shadow-2xl">
               <ProcessingState />
             </div>
           )}
@@ -116,19 +115,19 @@ function App() {
           )}
 
           {appState === AppState.ERROR && (
-             <div className="bg-red-950/30 border border-red-900/50 rounded-3xl p-8 text-center backdrop-blur-md">
+             <div className="bg-red-950/30 border border-red-900/50 rounded-3xl p-8 text-center">
                 <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-red-900/20 mb-4">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-red-500">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-bold text-white mb-2">Transcription Failed</h3>
+                <h3 className="text-xl font-bold text-white mb-2">Trascrizione Fallita</h3>
                 <p className="text-red-200 mb-6">{errorMsg}</p>
                 <button 
                   onClick={handleReset}
                   className="bg-white text-gray-900 px-6 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
                 >
-                  Try Again
+                  Riprova
                 </button>
              </div>
           )}
@@ -137,7 +136,7 @@ function App() {
 
         {/* Footer info */}
         <div className="mt-12 text-center text-gray-600 text-xs">
-          Powered by Google Gemini 3 Flash Preview &bull; Privacy Focused
+          Powered by Google Gemini 3 Flash Preview &bull; Privacy Protetta
         </div>
       </main>
     </div>

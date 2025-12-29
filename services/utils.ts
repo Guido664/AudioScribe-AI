@@ -24,11 +24,11 @@ export const validateAudioFile = (file: File): { valid: boolean; message?: strin
   const validTypes = ['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/x-m4a', 'audio/webm', 'audio/ogg', 'audio/aac'];
 
   if (!file.type.startsWith('audio/') && !validTypes.includes(file.type)) {
-    return { valid: false, message: 'Please upload a valid audio file (MP3, WAV, M4A, etc.).' };
+    return { valid: false, message: 'Carica un file audio valido (MP3, WAV, M4A, ecc.).' };
   }
 
   if (file.size > MAX_SIZE_MB * 1024 * 1024) {
-    return { valid: false, message: `File is too large. Max size is ${MAX_SIZE_MB}MB.` };
+    return { valid: false, message: `Il file è troppo grande. La dimensione massima è ${MAX_SIZE_MB}MB.` };
   }
 
   return { valid: true };
